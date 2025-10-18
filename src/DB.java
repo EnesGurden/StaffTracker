@@ -1,5 +1,6 @@
 import java.sql.Connection;
 import java.sql.DriverManager;
+import java.sql.PreparedStatement;
 import java.sql.SQLException;
 
 public class DB {
@@ -9,7 +10,8 @@ public class DB {
 
     private static Connection connection = null;
 
-    public static Connection getConnection() {
+    public static Connection getConnection()
+    {
         try {
             if (connection == null || connection.isClosed()) {
                 connection = DriverManager.getConnection(URL, USER, PASSWORD);
@@ -19,5 +21,37 @@ public class DB {
             e.printStackTrace();
         }
         return connection;
+    }
+
+    public static boolean insert(Personel personel)
+    {
+        String sql = "INSERT INTO personel (ad_soyad, giris_tarihi, cikis_tarihi) VALUES (?, ?, ?)";
+
+        try {
+            Connection conn = DB.getConnection();
+            PreparedStatement pstmt = conn.prepareStatement(sql);
+
+            pstmt.setString(1, personel.getAdSoyad());
+
+            if (personel.getGirisTarihi() != null) {
+                pstmt.setTimestamp(2, java.sql.Timestamp.valueOf(personel.getGirisTarihi()));
+            } else {
+                pstmt.setDate(2, null);
+            }
+
+            if (personel.getCikisTarihi() != null) {
+                pstmt.setTimestamp(3, java.sql.Timestamp.valueOf(personel.getCikisTarihi()));
+            } else {
+                pstmt.setDate(3, null);
+            }
+            
+            int affectedRows = pstmt.executeUpdate();
+            return affectedRows > 0;
+
+        } catch (SQLException e) {
+            System.err.println("❌ Failed insert personel!");
+            e.printStackTrace();
+        }
+        return false;
     }
 }

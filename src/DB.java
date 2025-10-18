@@ -44,12 +44,28 @@ public class DB {
             } else {
                 pstmt.setDate(3, null);
             }
-            
+
             int affectedRows = pstmt.executeUpdate();
             return affectedRows > 0;
 
         } catch (SQLException e) {
             System.err.println("❌ Failed insert personel!");
+            e.printStackTrace();
+        }
+        return false;
+    }
+
+    public static boolean deleteId(int id)
+    {
+        String sql = "DELETE FROM personel WHERE id = ?";
+        try {
+            Connection conn = DB.getConnection();
+            PreparedStatement pstmt = conn.prepareStatement(sql);
+
+            pstmt.setInt(1, id);
+            pstmt.executeUpdate();
+        } catch (SQLException e) {
+            System.err.println("❌ Personel silme hatası!");
             e.printStackTrace();
         }
         return false;

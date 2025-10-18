@@ -8,10 +8,12 @@ public class Main {
 
         if (conn != null) {
             try {
-                Personel Ali = new Personel("Ali", null, LocalDateTime.now());
-                DB.insert(Ali);
-                Personel Ahmet = new Personel("Ahmet", LocalDateTime.now(), null);
-                DB.insert(Ahmet);
+                //                Personel Ali = new Personel("Ali", null, LocalDateTime.now());
+                //                DB.insert(Ali);
+                // Personel Ahmet = new Personel("Ahmet", LocalDateTime.now(), null);
+                // DB.insert(Ahmet);
+
+                DB.deleteId(23);
 
                 DB.getConnection();
                 String sql = "SELECT * FROM personel";

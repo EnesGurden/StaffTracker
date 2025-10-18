@@ -1,7 +1,9 @@
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Timestamp;
 
 public class DB {
     private static String URL = "jdbc:mysql://localhost:3306/stafftracker_db";
@@ -69,5 +71,21 @@ public class DB {
             e.printStackTrace();
         }
         return false;
+    }
+
+    public static void selectAll() throws SQLException
+    {
+        String sql = "SELECT * FROM personel";
+        Connection conn = DB.getConnection();
+        PreparedStatement statement = conn.prepareStatement(sql);
+        ResultSet rs = statement.executeQuery();
+
+        while (rs.next()) {
+            int id = rs.getInt("id");
+            String adSoyad = rs.getString("ad_soyad");
+            Timestamp girisTarihi = rs.getTimestamp("giris_tarihi");
+            Timestamp cikisTarihi = rs.getTimestamp("cikis_tarihi");
+            System.out.println("ID: " + id + ", Ad: " + adSoyad + ", Giriş: " + girisTarihi + ", Çıkış: " + cikisTarihi);
+        }
     }
 }

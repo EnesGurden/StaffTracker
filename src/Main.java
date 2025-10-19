@@ -1,24 +1,19 @@
 import java.sql.*;
-import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 public class Main {
     public static void main(String[] args)
     {
-        Connection conn = DB.getConnection();
+        List<Personel> personelList = new ArrayList<>();
 
-        if (conn != null) {
-            try {
-                //                Personel Ali = new Personel("Ali", null, LocalDateTime.now());
-                //                DB.insert(Ali);
-                //                 Personel Ahmet = new Personel("Ahmet", LocalDateTime.now(), null);
-                //                 DB.insert(Ahmet);
-
-                //                DB.deleteId(4);
-
-                DB.selectAll();
-            } catch (SQLException e) {
-                System.err.println("❌ SQL hatası: " + e.getMessage());
+        try {
+            personelList = DB.selectAll();
+            for (Personel p : personelList) {
+                System.out.println("ID: " + p.getId() + ", Ad Soyad: " + p.getAdSoyad() + ", Giriş: " + p.getGirisTarihi() + ", Çıkış: " + p.getCikisTarihi());
             }
+        } catch (SQLException e) {
+            System.err.println("❌ SQL hatası: " + e.getMessage());
         }
     }
 }

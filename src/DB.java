@@ -3,7 +3,9 @@ import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Timestamp;
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 public class DB {
     private static String URL = "jdbc:mysql://localhost:3306/stafftracker_db";
@@ -19,7 +21,7 @@ public class DB {
                 connection = DriverManager.getConnection(URL, USER, PASSWORD);
             }
         } catch (SQLException e) {
-            System.err.println("❌ Fail database connection!");
+            System.err.println("❌ Database connection fail!");
             e.printStackTrace();
         }
         return connection;
@@ -51,7 +53,7 @@ public class DB {
             return affectedRows > 0;
 
         } catch (SQLException e) {
-            System.err.println("❌ Failed insert personel!");
+            System.err.println("❌ Insert Fail!");
             e.printStackTrace();
         }
         return false;
@@ -67,25 +69,34 @@ public class DB {
             pstmt.setInt(1, id);
             pstmt.executeUpdate();
         } catch (SQLException e) {
-            System.err.println("❌ Personel silme hatası!");
+            System.err.println("❌ Delete fail!");
             e.printStackTrace();
         }
         return false;
     }
 
-    public static void selectAll() throws SQLException
+    public static List<Personel> selectAll() throws SQLException
     {
         String sql = "SELECT * FROM personel";
-        Connection conn = DB.getConnection();
-        PreparedStatement statement = conn.prepareStatement(sql);
-        ResultSet rs = statement.executeQuery();
+        try {
+            Connection conn = DB.getConnection();
+            PreparedStatement statement = conn.prepareStatement(sql);
+            ResultSet rs = statement.executeQuery();
+            List<Personel> personelList = new ArrayList<>();
 
-        while (rs.next()) {
-            int id = rs.getInt("id");
-            String adSoyad = rs.getString("ad_soyad");
-            Timestamp girisTarihi = rs.getTimestamp("giris_tarihi");
-            Timestamp cikisTarihi = rs.getTimestamp("cikis_tarihi");
-            System.out.println("ID: " + id + ", Ad: " + adSoyad + ", Giriş: " + girisTarihi + ", Çıkış: " + cikisTarihi);
+            while (rs.next()) {
+                int id = rs.getInt("id");
+                String adSoyad = rs.getString("ad_soyad");
+                LocalDateTime girisTarihi = (rs.getTimestamp("giris_tarihi") != null) ? rs.getTimestamp("giris_tarihi").toLocalDateTime() : null;
+                LocalDateTime cikisTarihi = (rs.getTimestamp("cikis_tarihi") != null) ? rs.getTimestamp("cikis_tarihi").toLocalDateTime() : null;
+                Personel temp = new Personel(id, adSoyad, girisTarihi, cikisTarihi);
+                personelList.add(temp);
+            }
+            return personelList;
+        } catch (SQLException e) {
+            System.err.println("❌ Select Fail!");
+            e.printStackTrace();
+            return null;
         }
     }
 }

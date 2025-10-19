@@ -9,6 +9,7 @@ import java.util.List;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTable;
 import javax.swing.JTextField;
@@ -92,7 +93,7 @@ public class gui extends JFrame {
             },
             new String[] {
                 "ID", "Ad Soyad", "Giri\u015F Tarihi", "\u00C7\u0131k\u0131\u015F Tarihi" }));
-        jt.getColumnModel().getColumn(1).setPreferredWidth(118);
+                jt.getColumnModel().getColumn(1).setPreferredWidth(118);
         jt.getColumnModel().getColumn(2).setPreferredWidth(151);
         jt.getColumnModel().getColumn(3).setPreferredWidth(126);
         jt.setBounds(10, 11, 545, 311);
@@ -115,8 +116,13 @@ public class gui extends JFrame {
         btnGiris.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e)
             {
-                Personel temp = new Personel(textAdSoyad.getText(), LocalDateTime.now(), null);
-                DB.insert(temp);
+                if (!textAdSoyad.getText().isEmpty()) {
+                    Personel temp = new Personel(textAdSoyad.getText(), LocalDateTime.now(), null);
+                    DB.insert(temp);
+                } else {
+                    JOptionPane.showMessageDialog(null, "⚠️ Lütfen ad soyad giriniz!");
+                    return;
+                }
             }
         });
         btnGiris.setFont(new Font("Tahoma", Font.BOLD, 14));
@@ -127,8 +133,13 @@ public class gui extends JFrame {
         btnCikis.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e)
             {
-                Personel temp = new Personel(textAdSoyad.getText(), null, LocalDateTime.now());
-                DB.insert(temp);
+                if (!textAdSoyad.getText().isEmpty()) {
+                    Personel temp = new Personel(textAdSoyad.getText(), null, LocalDateTime.now());
+                    DB.insert(temp);
+                } else {
+                    JOptionPane.showMessageDialog(null, "⚠️ Lütfen ad soyad giriniz!");
+                    return;
+                }
             }
         });
         btnCikis.setFont(new Font("Tahoma", Font.BOLD, 14));

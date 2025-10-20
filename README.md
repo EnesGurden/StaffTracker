@@ -31,6 +31,10 @@ USE stafftracker_db;
 CREATE TABLE personel (
     id INT PRIMARY KEY AUTO_INCREMENT,
     ad_soyad VARCHAR(100) NOT NULL,
+    kimlik_no VARCHAR(11),
+    dogum_tarihi DATE,
+    anne_adi VARCHAR(100),
+    baba_adi VARCHAR(100),
     giris_tarihi DATETIME,
     cikis_tarihi DATETIME
 );

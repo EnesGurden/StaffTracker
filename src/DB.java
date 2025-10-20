@@ -14,8 +14,7 @@ public class DB {
 
     private static Connection connection = null;
 
-    public static Connection getConnection()
-    {
+    public static Connection getConnection() {
         try {
             if (connection == null || connection.isClosed()) {
                 connection = DriverManager.getConnection(URL, USER, PASSWORD);
@@ -27,26 +26,34 @@ public class DB {
         return connection;
     }
 
-    public static boolean insert(Personel personel)
-    {
-        String sql = "INSERT INTO personel (ad_soyad, giris_tarihi, cikis_tarihi) VALUES (?, ?, ?)";
+    public static boolean insert(Personel personel) {
+        String sql = "INSERT INTO personel (ad_soyad, kimlik_no, dogum_tarihi, anne_adi, baba_adi, giris_tarihi, cikis_tarihi) VALUES (?, ?, ?, ?, ?, ?, ?)";
 
         try {
             Connection conn = DB.getConnection();
             PreparedStatement pstmt = conn.prepareStatement(sql);
 
             pstmt.setString(1, personel.getAdSoyad());
+            pstmt.setString(2, personel.getKimlikNo());
+            if (personel.getDogumTarihi() != null) {
+                pstmt.setDate(3, java.sql.Date.valueOf(personel.getDogumTarihi()));
+            } else {
+                pstmt.setNull(3, java.sql.Types.DATE);
+            }
+
+            pstmt.setString(4, personel.getAnneAdi());
+            pstmt.setString(5, personel.getBabaAdi());
 
             if (personel.getGirisTarihi() != null) {
-                pstmt.setTimestamp(2, java.sql.Timestamp.valueOf(personel.getGirisTarihi()));
+                pstmt.setTimestamp(6, java.sql.Timestamp.valueOf(personel.getGirisTarihi()));
             } else {
-                pstmt.setDate(2, null);
+                pstmt.setDate(6, null);
             }
 
             if (personel.getCikisTarihi() != null) {
-                pstmt.setTimestamp(3, java.sql.Timestamp.valueOf(personel.getCikisTarihi()));
+                pstmt.setTimestamp(7, java.sql.Timestamp.valueOf(personel.getCikisTarihi()));
             } else {
-                pstmt.setDate(3, null);
+                pstmt.setDate(7, null);
             }
 
             int affectedRows = pstmt.executeUpdate();
@@ -59,8 +66,7 @@ public class DB {
         return false;
     }
 
-    public static boolean deleteId(int id)
-    {
+    public static boolean deleteId(int id) {
         String sql = "DELETE FROM personel WHERE id = ?";
         try {
             Connection conn = DB.getConnection();
@@ -75,8 +81,7 @@ public class DB {
         return false;
     }
 
-    public static List<Personel> selectAll() throws SQLException
-    {
+    public static List<Personel> selectAll() throws SQLException {
         String sql = "SELECT * FROM personel";
         try {
             Connection conn = DB.getConnection();
@@ -87,9 +92,18 @@ public class DB {
             while (rs.next()) {
                 int id = rs.getInt("id");
                 String adSoyad = rs.getString("ad_soyad");
-                LocalDateTime girisTarihi = (rs.getTimestamp("giris_tarihi") != null) ? rs.getTimestamp("giris_tarihi").toLocalDateTime() : null;
-                LocalDateTime cikisTarihi = (rs.getTimestamp("cikis_tarihi") != null) ? rs.getTimestamp("cikis_tarihi").toLocalDateTime() : null;
-                Personel temp = new Personel(id, adSoyad, girisTarihi, cikisTarihi);
+                String kimlikNo = rs.getString("kimlik_no");
+                String dogumTarihi = rs.getString("dogum_tarihi");
+                String anneAdi = rs.getString("anne_adi");
+                String babaAdi = rs.getString("baba_adi");
+                LocalDateTime girisTarihi = (rs.getTimestamp("giris_tarihi") != null)
+                        ? rs.getTimestamp("giris_tarihi").toLocalDateTime()
+                        : null;
+                LocalDateTime cikisTarihi = (rs.getTimestamp("cikis_tarihi") != null)
+                        ? rs.getTimestamp("cikis_tarihi").toLocalDateTime()
+                        : null;
+                Personel temp = new Personel(id, adSoyad, kimlikNo, dogumTarihi, anneAdi, babaAdi, girisTarihi,
+                        cikisTarihi);
                 personelList.add(temp);
             }
             return personelList;

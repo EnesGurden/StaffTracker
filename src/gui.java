@@ -192,14 +192,18 @@ public class gui extends JFrame {
 	}
 
 	private String lastCheck() {
-
-		if (textAdSoyad.getText().isEmpty()) {// rakam kontrolu eklenebilir
+		String adSoyad = textAdSoyad.getText().trim();
+		if (adSoyad.isEmpty()) {
 			return "❌ Ad Soyad boş olamaz!";
+		} else if (adSoyad.matches(".*\\d.*")) {
+			return "❌ Ad Soyad rakam içeremez!";
 		}
 
 		String kimlikNo = textKimlikNo.getText().trim();
 		if (kimlikNo.length() != 11) {
-			return "Kimlik No 11 haneli olmalıdır!";
+			return "❌ Kimlik No 11 haneli olmalıdır!";
+		} else if (!kimlikNo.matches("^\\d{11}$")) {
+			return "❌ Kimlik No sadece rakam içermelidir!";
 		}
 
 		String dogumTarihi = textDogum.getText().trim();
@@ -213,12 +217,18 @@ public class gui extends JFrame {
 			}
 		}
 
-		if (textAnneAdi.getText().isEmpty()) {// rakam kontrolu eklenebilir
+		String anneAdi = textAnneAdi.getText().trim();
+		if (anneAdi.isEmpty()) {
 			return "❌ Anne adı boş olamaz!";
+		} else if (anneAdi.matches(".*\\d.*")) {
+			return "❌ Anne adı rakam içeremez!";
 		}
 
-		if (textBabaAdi.getText().isEmpty()) {// rakam kontrolu eklenebilir
+		String babaAdi = textBabaAdi.getText().trim();
+		if (babaAdi.isEmpty()) {
 			return "❌ Baba adı boş olamaz!";
+		} else if (babaAdi.matches(".*\\d.*")) {
+			return "❌ Baba adı rakam içeremez!";
 		}
 		return null;
 	}
